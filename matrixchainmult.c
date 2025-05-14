@@ -1,92 +1,42 @@
+#include <stdio.h>
+#define INF 100000000
+#define MAX 100
 
-// Implementation of Matrix Chain Multiplication using dynamic programming.
-#include<stdio.h>
+int dp[MAX][MAX];
 
-int d[5]={3,2,4,2,5};
-int c[4][4];
-int x[4][4];
+// Recursive function with memoization
+int matrixChain(int arr[], int i, int j) {
+    if (i == j)
+        return 0;
 
-void cost(int i,int j)
-{
-    int tempc=1000,tempk=0;
-    for(int k=i;k<j;k++)
-    {
-        if(tempc>(c[i][k]+c[k+1][j]+d[i]*d[j+1]*d[k+1]))
-        {
-            tempc=c[i][k]+c[k+1][j]+d[i]*d[j+1]*d[k+1];
-            tempk=k+1;
-        }
+    if (dp[i][j] != -1)
+        return dp[i][j];
+
+    int min = INF;
+    for (int k = i; k < j; k++) {
+        int cost = matrixChain(arr, i, k) +
+                   matrixChain(arr, k + 1, j) +
+                   arr[i - 1] * arr[k] * arr[j];
+
+        if (cost < min)
+            min = cost;
     }
 
-    c[i][j]=tempc;
-    x[i][j]=tempk;
+    dp[i][j] = min;
+    return min;
 }
 
-void printOptimalOrder(int i, int j) {
-    if (i == j) {
-        printf("A%d ", i+1);
-    } else {
-        printf("(");
-        printOptimalOrder(i, x[i][j]-1);
-        printOptimalOrder(x[i][j], j);
-        printf(")");
-    }
-}
+int main() {
+    int arr[] = {10, 30, 5, 60, 10};
+    int n = 4;  // Number of matrices = 4 → arr size = 5
 
+    // Initialize DP table
+    for (int i = 0; i < MAX; i++)
+        for (int j = 0; j < MAX; j++)
+            dp[i][j] = -1;
 
-void tableForm()
-{
-    for(int i=0;i<4;i++)
-    {
-        c[i][i]=0;
-    }
-    
-    
-    int count=1;
-    while(count <=3)
-    {
-        for(int i=0;i<4;i++)
-        {
-            for(int j=0;j<4;j++)
-            {
-                if(j-i==count)
-                {
-                    printf("i:%d j:%d\n",i,j);
-                    cost(i,j);
-                }
-            }
-        }
-        count++;
-    }
+    int minCost = matrixChain(arr, 1, n);
+    printf("Minimum number of multiplications: %d\n", minCost);
 
-
-
-}
-
-void main()
-{   
-    tableForm();
-
-    for(int i=0;i<4;i++)
-    {
-        for(int j=0;j<4;j++)
-        {
-            printf("%d ",c[i][j]);
-        }
-        printf("\n");
-    }
-
-    // printf("\n xtra table\n");
-
-    // for(int i=0;i<4;i++)
-    // {
-    //     for(int j=0;j<4;j++)
-    //     {
-    //         printf("%d ",x[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    printOptimalOrder(0,3);
-
+    return 0;
 }

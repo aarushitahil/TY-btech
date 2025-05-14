@@ -1,8 +1,3 @@
-/*Regional's CS Department is writing a spell-checker system, and you have been tasked with writing a function to determine how closely two words resemble each other. The algorithm you are to use, albeit not a very good one, is to compare the two words character by character, and count how many times the characters in a given position are the same. For instance, the words "TICK" and "TOCK" have a score of 3, since three characters (T, C, K) are the same. 
-Similarly, "CAT" and "DOG" score 0, since no letters match.
-You are given Strings A and B and you have to return an integer K indicating the score (as    
-defined above) of how closely the two match.*/
-
 #include<stdio.h>
 #include<string.h>
 
@@ -52,7 +47,7 @@ void PRINT_LCS(int i,int j)
     if(b[i][j]=='d')
     {
         PRINT_LCS(i-1,j-1);
-        x[count]=s1[i-1];   //If this was written above PRINT_LCS(int i,int j) it would print reverse order. Now its using backtracking .Hence no need to reverse order here. 
+        x[count]=s1[i-1];   
         count++;
     }
     else if(b[i][j]=='u')

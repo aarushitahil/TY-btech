@@ -1,70 +1,55 @@
-#include <stdio.h>  
-#include <time.h>  
-#include <stdlib.h>  
+#include <stdio.h>
 
-int arr[10000];
+struct Result {
+    int min;
+    int max;
+};
 
-int min, max;
+struct Result maxMin(int A[], int low, int high) {
+    struct Result res, left, right;
 
-void minMax(int l, int r)
-{
-    int min1,max1,mid;
-    if(l==r)
-        max=min=arr[l];
-    else if(l==r-1)
-    {
-        if(arr[l]<arr[r])
-        {
-            min=arr[l];
-            max=arr[r];
-        }
-        else
-        {
-            min=arr[r];
-            max=arr[l];
-        }
+    // If only one element
+    if (low == high) {
+        res.min = res.max = A[low];
+        return res;
     }
-    else{
-        mid=l+(r-l)/2;
-        minMax(l,mid);
-        min1=min;
-        max1=max;
-        minMax(mid+1,r);
-        if(min>min1)
-            min=min1;
-        if(max<max1)
-            max=max1;
+    // If only two elements
+    else if (low == high - 1) {
+        if (A[low] < A[high]) {
+            res.min = A[low];
+            res.max = A[high];
+        } else {
+            res.min = A[high];
+            res.max = A[low];
+        }
+        return res;
+    }
+    // More than two elements
+    else {
+        int mid = (low + high) / 2;
+        left = maxMin(A, low, mid);
+        right = maxMin(A, mid + 1, high);
+
+        // Combine results
+        res.min = (left.min < right.min) ? left.min : right.min;
+        res.max = (left.max > right.max) ? left.max : right.max;
+        return res;
     }
 }
-int main() 
-{ 
-    int time;
-    clock_t start, end;
-    
-    for(int i=0; i<10000; i++)
-    {
-        long int no = rand();
-        arr[i] = no;
-    }
-    
-    
-	int arr_size = sizeof(arr) / sizeof(arr[0]); 
 
-	min = arr[0];
-	max = arr[0];
-	
-    start = clock();
-	
-	minMax(0, arr_size); 
-	
-	end = clock();
-	
-	printf("\nMin: %d", min);
-	printf("\nMax: %d", max);
-	
-	time = end-start;
-	
-	printf("\nTime is: %d", time);
-	return 0; 
+int main() {
+    int A[100], n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &A[i]);
+
+    struct Result final = maxMin(A, 0, n - 1);
+
+    printf("Minimum: %d\n", final.min);
+    printf("Maximum: %d\n", final.max);
+
+    return 0;
 }
-// 116, 182 ts10000
